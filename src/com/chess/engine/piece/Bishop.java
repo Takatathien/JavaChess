@@ -10,7 +10,7 @@ import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
 
-import spals.shaded.com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList;
 
 import com.chess.engine.board.Move.AttackMove;
 import com.chess.engine.board.Move.MajorMove;
@@ -57,6 +57,11 @@ public class Bishop extends Piece{
 		}
 		
 		return ImmutableList.copyOf(legalMoves);
+	}
+	
+	@Override
+	public String toString() {
+		return PieceType.BISHOP.toString();
 	}
 	
 	private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {

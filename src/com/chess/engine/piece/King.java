@@ -11,6 +11,7 @@ import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
 import com.chess.engine.board.Move.AttackMove;
 import com.chess.engine.board.Move.MajorMove;
+import com.chess.engine.piece.Piece.PieceType;
 
 public class King extends Piece {
 
@@ -49,6 +50,11 @@ public class King extends Piece {
 	 	}
 		
 		return legalMoves;
+	}
+	
+	@Override
+	public String toString() {
+		return PieceType.KING.toString();
 	}
 	
 	private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {

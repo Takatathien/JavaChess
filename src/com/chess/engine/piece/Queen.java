@@ -11,8 +11,9 @@ import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
 import com.chess.engine.board.Move.AttackMove;
 import com.chess.engine.board.Move.MajorMove;
+import com.chess.engine.piece.Piece.PieceType;
 
-import spals.shaded.com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList;
 
 public class Queen extends Piece {
 
@@ -56,6 +57,11 @@ public class Queen extends Piece {
 		}
 		
 		return ImmutableList.copyOf(legalMoves);
+	}
+	
+	@Override
+	public String toString() {
+		return PieceType.QUEEN.toString();
 	}
 	
 	private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {

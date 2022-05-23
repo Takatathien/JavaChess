@@ -9,8 +9,9 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.MajorMove;
+import com.chess.engine.piece.Piece.PieceType;
 
-import spals.shaded.com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList;
 
 public class Pawn extends Piece{
 
@@ -68,6 +69,11 @@ public class Pawn extends Piece{
 		}
 		
 		return ImmutableList.copyOf(legalMoves);
+	}
+	
+	@Override
+	public String toString() {
+		return PieceType.PAWN.toString();
 	}
 
 }
