@@ -1,5 +1,6 @@
 package com.chess.engine.board;
 
+import com.chess.engine.board.Board.Builder;
 import com.chess.engine.piece.Piece;
 
 public abstract class Move {
@@ -18,6 +19,10 @@ public abstract class Move {
 		return this.destinationCoordinate;
 	}
 	
+	public Piece getMovePiece() {
+		return movePiece;
+	}
+	
 	public abstract Board execute();
 	
 	public static final class MajorMove extends Move {
@@ -28,8 +33,22 @@ public abstract class Move {
 
 		@Override
 		public Board execute() {
-			// TODO Auto-generated method stub
-			return null;
+			final Builder builder = new Builder();
+			
+			// TODO implement equals method for pieces.
+			for (final Piece piece : this.board.currentPlayer().getActivePieces()) {
+				if (!this.movePiece.equals(piece)) {
+					builder.setPiece(piece);
+				}
+			}
+			
+			for (final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
+				builder.setPiece(piece);
+			}
+			builder.setPiece(this.movePiece.movePiece(this));
+			builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
+			
+			return builder.build();
 		}
 	}
 	

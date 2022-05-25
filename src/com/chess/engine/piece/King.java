@@ -12,6 +12,7 @@ import com.chess.engine.board.Tile;
 import com.chess.engine.board.Move.AttackMove;
 import com.chess.engine.board.Move.MajorMove;
 import com.chess.engine.piece.Piece.PieceType;
+import com.google.common.collect.ImmutableList;
 
 public class King extends Piece {
 
@@ -49,7 +50,12 @@ public class King extends Piece {
 			}
 	 	}
 		
-		return legalMoves;
+		return ImmutableList.copyOf(legalMoves);
+	}
+	
+	@Override
+	public King movePiece(Move move) {
+		return new King(move.getDestinationCoordinate(), move.getMovePiece().getPieceAlliance());
 	}
 	
 	@Override
