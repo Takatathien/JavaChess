@@ -79,7 +79,7 @@ public class Board {
 		return this.blackPieces;
 	}
 	
-	private Collection<Move> calculateLegalMoves(Collection<Piece> pieces) {
+	private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
 		final List<Move> legalMoves = new ArrayList<>();
 		
 		for (final Piece piece : pieces) {
@@ -153,6 +153,9 @@ public class Board {
 		builder.setPiece(new Bishop(61, Alliance.WHITE));
 		builder.setPiece(new Knight(62, Alliance.WHITE));
 		builder.setPiece(new Rook(63, Alliance.WHITE));
+		
+		// WHITE to move.
+		builder.setMoveMaker(Alliance.WHITE);
 		
 		return builder.build();
 	}
