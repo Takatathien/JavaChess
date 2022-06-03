@@ -39,11 +39,12 @@ public class Table {
 	private final BoardPanel boardPanel;
 	private final Color lightTileColor = Color.decode("#FFFACD");
 	private final Color darkTileColor = Color.decode("#593E1A");
-	private final Board chessBoard;
 	
 	private Tile sourceTile;
 	private Tile destinationTile;
 	private Piece humanMovedPiece;
+	private Board chessBoard;
+
 	
 	private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(600, 600);
 	private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
@@ -111,6 +112,16 @@ public class Table {
 			validate();
 		}
 		
+		public void drawBoard(final Board board) {
+			removeAll();
+			for (final TilePanel tilePanel : boardTiles) {
+				tilePanel.drawTile(board);
+				add(tilePanel);
+			}
+			validate();
+			repaint();
+		}
+		
 	}
 	
 	private class TilePanel extends JPanel {
@@ -141,13 +152,27 @@ public class Table {
 							}
 						} else { // Second click.
 							destinationTile = chessBoard.getTile(tileId);
-							final Move move = null;
-							final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
+							final Move move = Move.MoveFactory.createMove(
+									chessBoard, 
+									sourceTile.getTileCoordination(), 
+									destinationTile.getTileCoordination());
+							final MoveTransition transition = 
+									chessBoard.currentPlayer().makeMove(move);
 							
 							if (transition.getMoveStatus().isDone()) {
-								// TODO more works here.
+								chessBoard = transition.getTransitionBoard();
+								// TODO more works here!
 							}
+							sourceTile = null;
+							destinationTile = null;
+							humanMovedPiece = null;
 						}
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								boardPanel.drawBoard(chessBoard);
+							}
+						});
 					}
 				}
 
@@ -178,6 +203,13 @@ public class Table {
 			validate();
 		}
 		
+		public void drawTile(final Board board) {
+			assignTileColor();
+			assignTilePieceIcon(board);
+			validate();
+			repaint();
+		}
+		
 		private void assignTilePieceIcon(final Board board) {
 			this.removeAll();
 			
@@ -185,8 +217,11 @@ public class Table {
 				
 				try {
 					final BufferedImage image = 
-							ImageIO.read(new File(defaultPieceImagePath + board.getTile(this.tileId).getPiece().getPieceAlliance().toString().substring(0, 1) +
-									board.getTile(this.tileId).getPiece().toString() + ".gif"));
+							ImageIO.read(new File(defaultPieceImagePath + 
+									board.getTile(this.tileId).getPiece().
+									getPieceAlliance().toString().substring(0, 1) + 
+									board.getTile(this.tileId).getPiece().toString() + 
+									".gif"));
 					add (new JLabel(new ImageIcon(image)));
 				} catch (IOException e) {
 					e.printStackTrace();
