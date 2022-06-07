@@ -89,7 +89,8 @@ public class Board {
 		return ImmutableList.copyOf(legalMoves);
 	}
 
-	private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
+	private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, 
+			final Alliance alliance) {
 		final List<Piece> activePieces = new ArrayList<>();
 		for (final Tile tile : gameBoard) {
 			if (tile.isTileOccupied()) {
@@ -161,7 +162,8 @@ public class Board {
 	}
 	
 	public Iterable<Move> getAllLegalMoves() {
-		return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(), this.blackPlayer.getLegalMoves()));
+		return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer
+				.getLegalMoves(), this.blackPlayer.getLegalMoves()));
 	}
 	
 	public static class Builder {
