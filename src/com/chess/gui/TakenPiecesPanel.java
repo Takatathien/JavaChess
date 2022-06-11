@@ -13,6 +13,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
@@ -83,6 +85,9 @@ public class TakenPiecesPanel extends JPanel {
 				final BufferedImage image = ImageIO.read(new File("art/pieces/plain" + 
 						takenPiece.getPieceAlliance().toString().substring(0, 1) + "" + 
 						takenPiece.toString()));
+				final ImageIcon icon = new ImageIcon(image);
+				final JLabel imageLabel = new JLabel();
+				this.southPanel.add(imageLabel);
 			} catch (final IOException e) {
 				e.printStackTrace();
 			}
@@ -93,6 +98,9 @@ public class TakenPiecesPanel extends JPanel {
 				final BufferedImage image = ImageIO.read(new File("art/pieces/plain" + 
 						takenPiece.getPieceAlliance().toString().substring(0, 1) + "" + 
 						takenPiece.toString()));
+				final ImageIcon icon = new ImageIcon(image);
+				final JLabel imageLabel = new JLabel();
+				this.southPanel.add(imageLabel);
 			} catch (final IOException e) {
 				e.printStackTrace();
 			}
