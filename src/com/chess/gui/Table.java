@@ -40,7 +40,10 @@ import com.google.common.collect.Lists;
 public class Table {
 
 	private final JFrame gameFrame;
+	private final GameHistoryPanel gameHistoryPanel;
+	private final TakenPiecesPanel takenPiecesPanel;
 	private final BoardPanel boardPanel;
+	private final MoveLog moveLog;
 	private final Color lightTileColor = Color.decode("#FFFACD");
 	private final Color darkTileColor = Color.decode("#593E1A");
 	
@@ -56,7 +59,7 @@ public class Table {
 	private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
 	private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10); 
 	
-	public static String defaultPieceImagePath = "art/holywarriors/";
+	public static String defaultPieceImagePath = "art/simple/";
 
 	
 	public Table() {
@@ -66,10 +69,15 @@ public class Table {
 		this.gameFrame.setJMenuBar(tableMenuBar);
 		this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
 		this.chessBoard = Board.createStandardBoard();
+		this.gameHistoryPanel = new GameHistoryPanel();
+		this.takenPiecesPanel = new TakenPiecesPanel();
 		this.boardPanel = new BoardPanel();
+		this.moveLog = new MoveLog();
 		this.boardDirection = BoardDirection.NORMAL;
 		this.highlightLegalMoves = false;
+		this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
 		this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
+		this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
 		this.gameFrame.setVisible(true);
 	}
 
@@ -258,7 +266,7 @@ public class Table {
 							
 							if (transition.getMoveStatus().isDone()) {
 								chessBoard = transition.getTransitionBoard();
-								// TODO more works here!
+								moveLog.addMove(move);
 							}
 							sourceTile = null;
 							destinationTile = null;
@@ -267,6 +275,8 @@ public class Table {
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override
 							public void run() {
+								gameHistoryPanel.redo(chessBoard, moveLog);
+								takenPiecesPanel.redo(moveLog);
 								boardPanel.drawBoard(chessBoard);
 							}
 						});
