@@ -10,7 +10,9 @@ import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.MajorMove;
 import com.chess.engine.board.Move.PawnAttackMove;
+import com.chess.engine.board.Move.PawnEnPassantAttackMove;
 import com.chess.engine.board.Move.PawnJump;
+import com.chess.engine.board.Move.PawnMove;
 import com.chess.engine.piece.Piece.PieceType;
 
 import com.google.common.collect.ImmutableList;
@@ -43,7 +45,7 @@ public class Pawn extends Piece{
 			
 			if (currentCandidateOffset == 8 && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
 				// TODO more works here!
-				legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+				legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
 			} else if (currentCandidateOffset == 16 && this.isFirstMove() && 
 					((BoardUtils.SEVENTH_RANK[this.piecePosition] && this.pieceAlliance.isBlack()) || 
 					(BoardUtils.SECOND_RANK[this.piecePosition] && this.pieceAlliance.isWhite()))) {
@@ -52,7 +54,6 @@ public class Pawn extends Piece{
 				
 				if (!board.getTile(behindCandidateDestinationCoordinate).isTileOccupied() &&
 						!board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
-					// TODO more works here!
 					legalMoves.add(new PawnJump(board, this, candidateDestinationCoordinate));
 				}
 			} else if (currentCandidateOffset == 7 && 
@@ -64,6 +65,14 @@ public class Pawn extends Piece{
 						// TODO more work!
 						legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
 					}
+				} else if (board.getEnPassantPawn() != null) {
+					if (board.getEnPassantPawn().getPiecePosition() == (this.piecePosition + (this.pieceAlliance.getOppositeDirection()))) {
+						final Piece pieceOnCandidate = board.getEnPassantPawn();
+						
+						if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
+							legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+						}
+					}
 				}
 			} else if (currentCandidateOffset == 9 && 
 					!((BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
@@ -73,6 +82,14 @@ public class Pawn extends Piece{
 					if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
 						// TODO more work!
 						legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+					}
+				} else if (board.getEnPassantPawn() != null) {
+					if (board.getEnPassantPawn().getPiecePosition() == (this.piecePosition - (this.pieceAlliance.getOppositeDirection()))) {
+						final Piece pieceOnCandidate = board.getEnPassantPawn();
+						
+						if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
+							legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+						}
 					}
 				}
 			}
