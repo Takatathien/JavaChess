@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -28,8 +29,8 @@ public class TakenPiecesPanel extends JPanel {
 	private final JPanel northPanel;
 	private final JPanel southPanel;
 	
-	private static final Color PANEL_COLOR = Color.decode("0xFDFE6");
-	private static final Dimension TAKEN_PIECES_DIMENSION = new Dimension(40, 80);
+	private static final Color PANEL_COLOR = Color.decode("0xFDF5E6");
+	private static final Dimension TAKEN_PIECES_PANEL_DIMENSION = new Dimension(40, 80);
 	private static final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
 	
 	public TakenPiecesPanel() {
@@ -42,7 +43,7 @@ public class TakenPiecesPanel extends JPanel {
 		this.southPanel.setBackground(PANEL_COLOR);
 		this.add(this.northPanel, BorderLayout.NORTH);
 		this.add(this.southPanel, BorderLayout.SOUTH);
-		setPreferredSize(TAKEN_PIECES_DIMENSION);
+		setPreferredSize(TAKEN_PIECES_PANEL_DIMENSION);
 	}
 	
 	public void redo(final MoveLog moveLog) {
@@ -82,11 +83,12 @@ public class TakenPiecesPanel extends JPanel {
 		
 		for (final Piece takenPiece : whiteTakenPieces) {
 			try {
-				final BufferedImage image = ImageIO.read(new File("art/pieces/plain" + 
+				final BufferedImage image = ImageIO.read(new File("art/simple/" + 
 						takenPiece.getPieceAlliance().toString().substring(0, 1) + "" + 
-						takenPiece.toString()));
+						takenPiece.toString() + ".gif"));
 				final ImageIcon icon = new ImageIcon(image);
-				final JLabel imageLabel = new JLabel();
+				final JLabel imageLabel = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(
+                        icon.getIconWidth() - 15, icon.getIconWidth() - 15, Image.SCALE_SMOOTH)));
 				this.southPanel.add(imageLabel);
 			} catch (final IOException e) {
 				e.printStackTrace();
@@ -95,12 +97,13 @@ public class TakenPiecesPanel extends JPanel {
 		
 		for (final Piece takenPiece : blackTakenPieces) {
 			try {
-				final BufferedImage image = ImageIO.read(new File("art/pieces/plain" + 
+				final BufferedImage image = ImageIO.read(new File("art/simple/" + 
 						takenPiece.getPieceAlliance().toString().substring(0, 1) + "" + 
-						takenPiece.toString()));
+						takenPiece.toString() + ".gif"));
 				final ImageIcon icon = new ImageIcon(image);
-				final JLabel imageLabel = new JLabel();
-				this.southPanel.add(imageLabel);
+				final JLabel imageLabel = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(
+                        icon.getIconWidth() - 15, icon.getIconWidth() - 15, Image.SCALE_SMOOTH)));
+				this.northPanel.add(imageLabel);
 			} catch (final IOException e) {
 				e.printStackTrace();
 			}
