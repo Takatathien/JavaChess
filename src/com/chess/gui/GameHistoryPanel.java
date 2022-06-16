@@ -67,7 +67,7 @@ public class GameHistoryPanel extends JPanel{
 	}
 	
 	private String calculateCheckAndCheckMateHash(final Board board) {
-		if (board.currentPlayer().IsInCheckMate()) return "#";
+		if (board.currentPlayer().isInCheckMate()) return "#";
 		else if (board.currentPlayer().isInCheck()) return "+";
 		
 		return "";
