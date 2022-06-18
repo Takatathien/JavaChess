@@ -2,17 +2,23 @@ package com.tests.chess.engine.board;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.Board.Builder;
+import com.chess.engine.board.BoardUtils;
+import com.chess.engine.board.Move;
 import com.chess.engine.piece.Bishop;
 import com.chess.engine.piece.Knight;
 import com.chess.engine.piece.Pawn;
 import com.chess.engine.piece.Queen;
 import com.chess.engine.piece.Rook;
+import com.chess.engine.player.MoveTransition;
+import com.chess.engine.player.ai.MiniMax;
+import com.chess.engine.player.ai.MoveStrategy;
 
 public class BoardTest {
 
@@ -72,4 +78,33 @@ public class BoardTest {
         //build the board
         builder.build();
     }
+	
+	@Test
+	public void testFoolsMate() {
+		final Board board = Board.createStandardBoard();
+		final MoveTransition t1 = board.currentPlayer()
+				.makeMove(Move.MoveFactory.createMove(board, 
+							BoardUtils.getCoordinateAtPosition("f2"), 
+							BoardUtils.getCoordinateAtPosition("f3")));
+		assertTrue(t1.getMoveStatus().isDone());
+		
+		final MoveTransition t2 = board.currentPlayer()
+				.makeMove(Move.MoveFactory.createMove(board, 
+						  	BoardUtils.getCoordinateAtPosition("e7"), 
+						  	BoardUtils.getCoordinateAtPosition("e5")));
+		assertTrue(t2.getMoveStatus().isDone());
+		
+		final MoveTransition t3 = board.currentPlayer()
+				.makeMove(Move.MoveFactory.createMove(board, 
+						  	BoardUtils.getCoordinateAtPosition("g2"), 
+						  	BoardUtils.getCoordinateAtPosition("g4")));
+		assertTrue(t3.getMoveStatus().isDone());
+		
+		final MoveStrategy strategy = new MiniMax(4);
+		final Move aiMove = strategy.execute(t3.getTransitionBoard());
+		final Move bestMove = Move.MoveFactory.createMove(board, 
+				              	BoardUtils.getCoordinateAtPosition("d8"), 
+				              	BoardUtils.getCoordinateAtPosition("h4"));
+		assertEquals(aiMove, bestMove);
+	}
 }
