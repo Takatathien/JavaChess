@@ -10,12 +10,12 @@ public enum Alliance {
 	WHITE {
 		@Override
 		public int getDirection() {
-			return -1;
+			return UP_DIRECTION;
 		}
 		
 		@Override
 		public int getOppositeDirection() {
-			return 1;
+			return DOWN_DIRECTION;
 		}
 
 		@Override
@@ -35,19 +35,25 @@ public enum Alliance {
 		}
 		
 		@Override
-		public Player choosePlayer(final WhitePlayer whitePlayer, final BlackPlayer blackPlayer) {
+		public Player choosePlayer(final WhitePlayer whitePlayer, 
+				                   final BlackPlayer blackPlayer) {
 			return whitePlayer;
+		}
+		
+		@Override
+		public String toString() {
+			return "White";
 		}
 	}, 
 	BLACK {
 		@Override
 		public int getDirection() {
-			return 1;
+			return DOWN_DIRECTION;
 		}
 		
 		@Override
 		public int getOppositeDirection() {
-			return -1;
+			return UP_DIRECTION;
 		}
 
 		@Override
@@ -71,6 +77,9 @@ public enum Alliance {
 			return blackPlayer;
 		}
 	};
+	
+	private static final int UP_DIRECTION = -1;
+	private static final int DOWN_DIRECTION = 1;
 	
 	public abstract int getDirection();
 	public abstract int getOppositeDirection();
