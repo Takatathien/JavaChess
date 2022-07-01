@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -37,7 +39,7 @@ import com.chess.engine.player.MoveTransition;
 import com.google.common.collect.Lists;
 
 
-public class Table {
+public class Table extends Observable {
 
 	private final JFrame gameFrame;
 	private final GameHistoryPanel gameHistoryPanel;
@@ -46,6 +48,7 @@ public class Table {
 	private final MoveLog moveLog;
 	private final Color lightTileColor = Color.decode("#FFFACD");
 	private final Color darkTileColor = Color.decode("#593E1A");
+	private final GameSetup gameSetup;
 	
 	private Tile sourceTile;
 	private Tile destinationTile;
@@ -54,15 +57,14 @@ public class Table {
 	private BoardDirection boardDirection;
 	private boolean highlightLegalMoves;
 
+	public static String defaultPieceImagePath = "art/simple/";
 	
 	private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(600, 600);
 	private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
 	private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10); 
+	private static final Table INSTANCE = new Table();
 	
-	public static String defaultPieceImagePath = "art/simple/";
-
-	
-	public Table() {
+	private Table() {
 		this.gameFrame = new JFrame("JavaChess");
 		this.gameFrame.setLayout(new BorderLayout());
 		final JMenuBar tableMenuBar = createTableMenuBar();
@@ -73,12 +75,25 @@ public class Table {
 		this.takenPiecesPanel = new TakenPiecesPanel();
 		this.boardPanel = new BoardPanel();
 		this.moveLog = new MoveLog();
+		this.gameSetup = new GameSetup(this.gameFrame, true);
 		this.boardDirection = BoardDirection.NORMAL;
 		this.highlightLegalMoves = false;
 		this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
 		this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
 		this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
 		this.gameFrame.setVisible(true);
+	}
+	
+	public static Table get() {
+		return INSTANCE;
+	}
+	
+	private GameSetup getGameSetup() {
+		return this.gameSetup;
+	}
+	
+	private Board getGameBoard() {
+		return this.chessBoard;
 	}
 
 	private JMenuBar createTableMenuBar() {
@@ -137,6 +152,40 @@ public class Table {
 		
 		return preferencesMenu;
 	}
+	
+	private JMenu createOptionMenu() {
+		final JMenu optionMenu = new JMenu("Option");
+		final JMenuItem setupGameMenuItem = new JMenuItem("Setup Game");
+		setupGameMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Table.get().getGameSetup().promptUser();
+				Table.get().setupUpdate(Table.get().getGameSetup());
+			}
+		});
+		
+		optionMenu.add(setupGameMenuItem);
+		
+		return optionMenu;
+	}
+	
+	private void setupUpdate(final GameSetup gameSetup) {
+		setChanged();
+		notifyObservers(gameSetup);
+	}
+	
+	private static class TableGameAIWatcher implements Observer {
+
+		@Override
+		public void update(final Observable o, final Object arg) {
+			if (Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer())
+				&& !Table.get().getGameBoard().currentPlayer().isInCheckMate()
+				&& !Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
+				// TODO more works here.
+			}
+		}
+		
+	}
+	
 	
 	public enum BoardDirection {
 		
@@ -227,6 +276,11 @@ public class Table {
 		public boolean removeMove(final Move move) {
 			return this.moves.remove(move);
 		}
+	}
+	
+	enum PlayerType {
+		HUMAN,
+		COMPUTER
 	}
 	
 	private class TilePanel extends JPanel {
